@@ -20,6 +20,10 @@ const Signup = () => {
             console.log(formData.email);
             const response = await axios.post("/api/signup", JSON.stringify(formData));
             setMessage(response.data.message);
+            if(response.data.message == "User signed up successfully")
+            {
+                router.push('/login');
+            }
         } catch (error) {
             console.error("Error in user signup:", error);
         }

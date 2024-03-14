@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from "next/navigation"
+import { useRouter, redirect } from "next/navigation"
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -21,13 +21,15 @@ const Login = () => {
             console.log(formData);
             const response = await axios.post('/api/login', JSON.stringify(formData));
             setMessage(response.data.message)
-            console.log("setMessage", setMessage.data);
+            // console.log("setMessage", setMessage.data);
             if(response.data.message == "User logged in successfully")
             {
+                window.localStorage.setItem('isLoggedin', true);
                 router.push('/');
             }
-        } catch (error) {
-            setMessage(error.response.data.error);
+        }
+        catch (error) {
+            setMessage(error.response.data.message);
         }
     };
 

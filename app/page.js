@@ -7,17 +7,20 @@ import { TbChartInfographic } from "react-icons/tb";
 import { MdOutlineContentCopy } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/navigation"
-import Signup from "./signup/page";
 
 export default function Home() {
-
   const router = useRouter();
-  
+  // window.localStorage.setItem('isLoggedin', false);
+  console.log("value aagai", localStorage.getItem("isLoggedin"));
+
   useEffect(() => {
-    router.push('/login');
+    const isLoggedIn = localStorage.getItem("isLoggedin");
+    if (!isLoggedIn || isLoggedIn !== "true") {
+      router.push('/login');
+    }
     fetchData();
   }, []);
-  
+
   const [longUrl, setLongUrl] = useState("");
   const [shortUrls, setShortUrls] = useState([]);
 
@@ -65,7 +68,7 @@ export default function Home() {
     <main className="min-h-screen">
       <section className="px-12 mx-auto">
         <div className="pl-[50px] flex gap-[35px] flex-col flex-center items-center">
-          <h1 className="text-5xl font-bold mt-36">URL Shortener</h1>
+          <h1 className="text-5xl font-bold mt-32">URL Shortener</h1>
           <div className="flex justify-center lg:pl-32 pr-10 w-full mt-32">
             <input className="w-1/2 text-black p-3 mr-8" type="text" placeholder="Enter long URL" value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
             <button className="w-1/6 bg-[#ff7c00] hover:transition duration-500 hover:bg-[#ffa000] font-bold" onClick={onCreate}> Make it short </button>
