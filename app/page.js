@@ -59,8 +59,7 @@ export default function Home() {
       console.error(error);
     }
   };
-
-
+  
   const copyText = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -70,8 +69,16 @@ export default function Home() {
     }
   };
 
+   const handleLogout = () => {
+    window.localStorage.setItem('isLoggedin', false);
+    location.reload();
+  }
+
   return (
     <main className="min-h-screen">
+    <div className="flex px-8 pt-3 justify-end w-full">
+        <button className=" bg-white/5 py-1 px-3 rounded hover:bg-white/10" onClick={handleLogout}>Logout</button>
+      </div>
       <section className="px-12 mx-auto">
         <div className="pl-[50px] flex gap-[35px] flex-col flex-center items-center">
           <h1 className="text-5xl font-bold mt-32">URL Shortener</h1>
