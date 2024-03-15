@@ -79,7 +79,7 @@ export default function Home() {
             <input type="url" className="w-1/2 text-black p-3 mr-8" placeholder="Enter long URL" value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
             <button className="w-1/6 bg-[#ff7c00] hover:transition duration-500 hover:bg-[#ffa000] font-bold" onClick={onCreate}> Make it short </button>
           </div>
-          <ul className="w-full lg:pl-24">
+          <ul className="w-full lg:pl-24 flex flex-col-reverse">
             {shortUrls ? shortUrls.map((item) => (
               <li key={item._id}>
                 <div className="flex flex-row justify-center items-center text-white w-full mb-2">
