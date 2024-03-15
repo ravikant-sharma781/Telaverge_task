@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { connectionStr } from "@/lib/db";
 import Mapping from "@/lib/models/mapping";
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 mongoose.connect(connectionStr)
     .then(() => console.log('Connected to MongoDB'))
@@ -9,8 +9,8 @@ mongoose.connect(connectionStr)
 
 export async function DELETE(req, res) {
     try {
-        const { _id } = req.query;
-        console.log("from delete ID: ", _id)
+        const { _id } = await req.json();
+        console.log("from delete ID: ", _id);
         const deletedMapping = await Mapping.findByIdAndDelete(_id);
         if (!deletedMapping) {
             return NextResponse.json({ error: "Record not found" }, { status: 404 });
@@ -19,6 +19,7 @@ export async function DELETE(req, res) {
         return NextResponse.json({ message: "Record deleted successfully" });
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 }); // Added response for internal server error
     }
 }

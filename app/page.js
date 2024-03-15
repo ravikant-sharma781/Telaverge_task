@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 import Analysis from '../app/analysis/page'
 import { RxCross1 } from "react-icons/rx";
 import { TbChartInfographic } from "react-icons/tb";
@@ -10,35 +10,37 @@ import { useRouter } from "next/navigation"
 
 export default function Home() {
   const router = useRouter();
-  // window.localStorage.setItem('isLoggedin', false);
-  console.log("value aagai", localStorage.getItem("isLoggedin"));
-
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedin");
-    if (!isLoggedIn || isLoggedIn !== "true") {
-      router.push('/login');
-    }
-    fetchData();
-  }, []);
 
   const [longUrl, setLongUrl] = useState("");
   const [shortUrls, setShortUrls] = useState([]);
 
+  console.log(shortUrls);
+  // window.localStorage.setItem('isLoggedin', false);
+  // console.log("value aagai", localStorage.getItem("isLoggedin"));
+
+  useEffect(() => {
+    fetchData();
+    const isLoggedIn = localStorage.getItem("isLoggedin");
+    if (!isLoggedIn || isLoggedIn !== "true") {
+      router.push('/login');
+    }
+  }, []);
+
   const fetchData = async () => {
     try {
-      const res = await axios.get('/api/getdata', { cache: 'force-cache' });
+      const res = await axios.get('/api/getdata');
       setShortUrls(res.data.result);
     } catch (err) {
       console.error(err);
     }
   };
 
-
   const onCreate = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("/api/shorten", { longUrl });
       const shortUrl = response.data.shortUrl;
+      const res = await axios.post("/api/mapping", { longUrl, shortUrl });
       setShortUrls([...shortUrls, { longUrl, shortUrl }]);
     } catch (error) {
       console.error("Error in creating short URL:", error);
@@ -46,13 +48,17 @@ export default function Home() {
   };
 
   const onDelete = async (_id) => {
-    const response = await axios.delete(`/api/delete/${_id}`)
-    console.log(_id)
-    const data = await response.json();
-    console.log(data);
-    fetchData();
-  }
-
+    try {
+      console.log(_id);
+      const response = await axios.delete("/api/delete", { data: { _id } });
+      fetchData();
+      {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 
   const copyText = async (text) => {
@@ -70,11 +76,11 @@ export default function Home() {
         <div className="pl-[50px] flex gap-[35px] flex-col flex-center items-center">
           <h1 className="text-5xl font-bold mt-32">URL Shortener</h1>
           <div className="flex justify-center lg:pl-32 pr-10 w-full mt-32">
-            <input className="w-1/2 text-black p-3 mr-8" type="text" placeholder="Enter long URL" value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
+            <input type="url" className="w-1/2 text-black p-3 mr-8" placeholder="Enter long URL" value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
             <button className="w-1/6 bg-[#ff7c00] hover:transition duration-500 hover:bg-[#ffa000] font-bold" onClick={onCreate}> Make it short </button>
           </div>
           <ul className="w-full lg:pl-24">
-            {shortUrls.map((item) => (
+            {shortUrls ? shortUrls.map((item) => (
               <li key={item._id}>
                 <div className="flex flex-row justify-center items-center text-white w-full mb-2">
                   <div className="flex flex-row justify-between w-1/2 bg-white/5 p-5">
@@ -95,7 +101,7 @@ export default function Home() {
                   </div>
                 </div>
               </li>
-            ))}
+            )) : null}
           </ul>
         </div>
       </section>

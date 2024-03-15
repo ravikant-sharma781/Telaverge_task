@@ -1,4 +1,3 @@
-import { hash } from 'bcrypt';
 import { NextResponse } from 'next/server';
 
 export async function POST(req, res) {
@@ -11,9 +10,7 @@ export async function POST(req, res) {
         else {
             const shortUrl = makeShortUrl();
             console.log("Shortened Url:", shortUrl);
-            return (
-                NextResponse.json({ shortUrl }, { status: 200 })
-            );
+            return NextResponse.json({ shortUrl }, { status: 200 })
         }
     } catch (error) {
         console.error("Error:", error);

@@ -18,7 +18,10 @@ export async function POST(req, res) {
   const user = await User.findOne({ email })
   console.log("user from API", user)
   if (!user|| !(password == user.password))
-  { return NextResponse.json({ error: 'Invalid email or password' }) }
+  {
+    // alert("Invalid email or password");
+    return NextResponse.json({ error: 'Invalid email or password' })
+  }
   console.log("user from API down", user)
   console.log(user)
   return NextResponse.json({user,  message: 'User logged in successfully'});
